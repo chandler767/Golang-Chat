@@ -19,13 +19,12 @@ Build your own chat app with PubNub and Golang.
 
 1. Install the latest version of [Go](https://golang.org/) and setup your $GOPATH.
 2. Use `go get` in your terminal to download the GoCUI package and the PubNub messaging package:
-	```bash
-	go get github.com/jroimartin/gocui
-	go get github.com/pubnub/go/messaging
-	```
+```bash
+go get github.com/jroimartin/gocui
+go get github.com/pubnub/go/messaging
+```
 3. Create a new directory for your project and create a file named `main.go`.
 4. The `main.go` will contain the code for the layout of our chat application using [GoCUI](https://github.com/jroimartin/gocui). GoCUI is a minimalist Go package aimed at creating Console User Interfaces. In this example we create two views (input and ouput) for our chat app, call a manager function that updates our views when the window size changes, and bind the enter key to the text input to submit messages. 
-
 ```go
 package main
 
