@@ -17,14 +17,14 @@ Build your own chat app with PubNub and Golang.
 
 1. Install the latest version of [Go](https://golang.org/) and setup your $GOPATH.
 2. Use `go get` in your terminal to download GoCUI and PubNub messaging packages:
-	```
+	```bash
 	go get github.com/jroimartin/gocui
 	go get github.com/pubnub/go/messaging
 	```
 3. Create a new directory for your project and create a file named `main.go`.
 4. The `main.go` will contain the code for the layout of our chat application using [GoCUI](https://github.com/jroimartin/gocui). GoCUI is a minimalist Go package aimed at creating Console User Interfaces. In this example we create two views (input and ouput) for our chat app, call a manager function that updates our views when the window size changes, and bind the enter key to the text input to submit messages. 
 
-```
+```go
 package main
 
 import (
@@ -166,7 +166,58 @@ func main() {
 }
 
 ```
-5. Run the application: `go run main.go`. You should be able to enter a channel name, username, and send messages to yourself. Now we need to integrate PubNub to send messages to other users and receive messages.
-6. To be continued.
+5. Run the application: `go run main.go`. You should be able to enter a channel name, username, and send messages to yourself. 
+![Image of application GUI](https://raw.githubusercontent.com/chandler767/Go-Chat/master/images/UI.png)
+
+6. Now we need to integrate PubNub to send messages to other users and receive messages.
+7. You need PubNub API Keys. This allows the chat communication over a data stream network. You can fill in the YOUR_PUBLISH_API_KEY and YOUR_SUBSCRIBE_API_KEY placeholder strings with your API keys that you get on the (PubNub website)[http://pubnub.com/].
+8. Import the PubNub messaging package and the encoding/json package.
+```
+"github.com/pubnub/go/messaging"
+"encoding/json"
+```
+9. Initialize PubNub at the beginning of the function that creates our chat GUI.
+```
+// Initialize PubNub
+pubnub := messaging.NewPubnub("YOUR_PUBLISH_API_KEY", "YOUR_SUBSCRIBE_API_KEY", "", "", false, "", nil)
+```
+10. Subscribe (listen on) a channel. This is async. We have to refresh the output view when a new message is received. Add this inside the drawchat function before the main loop.
+```go
+// Subscribe (listen on) a channel.
+successChannel := make(chan []byte)
+go pubnub.Subscribe(channel, "", successChannel, false, make(chan []byte))
+go func() {
+	for {
+		select {
+		case response := <-successChannel:
+			var msg []interface{}
+			err := json.Unmarshal(response, &msg)
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			ov, err := g.View("output")
+			if err != nil {
+				log.Println("Cannot get output view:", err)
+				return
+			}
+			switch m := msg[0].(type) {
+			case []interface{}:
+				// Get output view and print.
+				_, err = fmt.Fprintf(ov, "%s", m[0])
+				if err != nil {
+					log.Println("Cannot print to output view:", err)
+				}
+
+			}
+			// Refresh view
+			g.Update(func(g *gocui.Gui) error {
+				return nil
+			})
+		}
+	}
+}()
+```
+
  
 
