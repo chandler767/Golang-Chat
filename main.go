@@ -2,15 +2,20 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 	"strings"
 
 	"github.com/jroimartin/gocui"
+	"github.com/pubnub/go/messaging"
 )
 
 func drawchat(channel string, username string) {
+	// Initialize PubNub
+	pubnub := messaging.NewPubnub("YOUR_PUBLISH_API_KEY", "YOUR_SUBSCRIBE_API_KEY", "", "", false, "", nil)
+
 	// Create a new GUI.
 	g, err := gocui.NewGui(gocui.OutputNormal)
 	if err != nil {
@@ -49,11 +54,11 @@ func drawchat(channel string, username string) {
 	ov.Wrap = true
 
 	// Send a welcome message.
-	_, err = fmt.Fprintln(ov, "<App>: Welcome to Go-Chat powered by PubNub!")
+	_, err = fmt.Fprintln(ov, "<Go-Chat>: Welcome to Go-Chat powered by PubNub!")
 	if err != nil {
 		log.Println("Failed to print into output view:", err)
 	}
-	_, err = fmt.Fprintln(ov, "<App>: Press Ctrl-C to quit.")
+	_, err = fmt.Fprintln(ov, "<Go-Chat>: Press Ctrl-C to quit.")
 	if err != nil {
 		log.Println("Failed to print into output view:", err)
 	}
@@ -87,26 +92,26 @@ func drawchat(channel string, username string) {
 		// Read buffer from the beginning.
 		iv.Rewind()
 
-		// Get output view and print.
-		ov, err := g.View("output")
-		if err != nil {
-			log.Println("Cannot get output view:", err)
+		// Send message if text was entered.
+		if len(iv.Buffer()) >= 2 {
+			go pubnub.Publish(
+				channel,
+				"<"+username+">: "+iv.Buffer(),
+				make(chan []byte),
+				make(chan []byte),
+			)
+
+			// Reset input.
+			iv.Clear()
+
+			// Reset cursor.
+			err = iv.SetCursor(0, 0)
+			if err != nil {
+				log.Println("Failed to set cursor:", err)
+			}
 			return err
 		}
-		_, err = fmt.Fprintf(ov, "<%s>: %s", username, iv.Buffer())
-		if err != nil {
-			log.Println("Cannot print to output view:", err)
-		}
-
-		// Reset input.
-		iv.Clear()
-
-		// Reset cursor.
-		err = iv.SetCursor(0, 0)
-		if err != nil {
-			log.Println("Failed to set cursor:", err)
-		}
-		return err
+		return nil
 	})
 	if err != nil {
 		log.Println("Cannot bind the enter key:", err)
@@ -124,6 +129,7 @@ func drawchat(channel string, username string) {
 }
 
 func main() {
+	fmt.Println("PubNub SDK for go;", messaging.VersionInfo())
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Enter Channel Name: ")
 	channel, err := reader.ReadString('\n')
