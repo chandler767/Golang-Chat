@@ -262,5 +262,6 @@ fmt.Println("PubNub SDK for go;", messaging.VersionInfo())
 ```
 13. Try it out `go run main.go`.
 
+![Image of Go-Chat startup](https://raw.githubusercontent.com/chandler767/Go-Chat/master/images/startup.png)
 
 ![Image of Go-Chat](https://raw.githubusercontent.com/chandler767/Go-Chat/master/images/chat.png)
