@@ -186,7 +186,7 @@ func main() {
 // Initialize PubNub
 pubnub := messaging.NewPubnub("YOUR_PUBLISH_API_KEY", "YOUR_SUBSCRIBE_API_KEY", "", "", false, "", nil)
 ```
-10. Subscribe (listen on) a channel. This is async. We have to refresh the output view when a new message is received. Add this inside the drawchat function before the main loop.
+10. Subscribe (listen on) a channel. This is async. We have to refresh the output view when a new message is received. Add this inside the drawchat function before where the main loop is started.
 ```go
 // Subscribe (listen on) a channel.
 successChannel := make(chan []byte)
