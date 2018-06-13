@@ -213,7 +213,6 @@ go func() {
 				if err != nil {
 					log.Println("Cannot print to output view:", err)
 				}
-
 			}
 			// Refresh view
 			g.Update(func(g *gocui.Gui) error {
