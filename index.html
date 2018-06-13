@@ -21,6 +21,22 @@
     <!-- Custom styles for this template -->
     <link href="css/grayscale.min.css" rel="stylesheet">
 
+    <style>
+    .video-responsive{
+        overflow:hidden;
+        padding-bottom:56.25%;
+        position:relative;
+        height:0;
+    }
+    .video-responsive iframe{
+        left:0;
+        top:0;
+        height:100%;
+        width:100%;
+        position:absolute;
+    }
+    </style>
+
   </head>
 
   <body id="page-top">
@@ -72,7 +88,7 @@
         <div class="row">
           <div class="col-lg-8 mx-auto">
             <h2>Video Tutorial and Demo</h2>
-            <p><iframe width="560" height="315" src="https://www.youtube.com/embed/w5Kl1rlb24E" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></p>
+            <p><div class="video-responsive"><iframe width="560" height="315" src="https://www.youtube.com/embed/w5Kl1rlb24E" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div></p>
             <p>You can find the text tutorial <a href="https://github.com/chandler767/Go-Chat">on GitHub</a>.</p>
           </div>
         </div>
