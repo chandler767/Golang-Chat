@@ -11,8 +11,8 @@ Console chat utility that demonstrates [PubNub](https://www.pubnub.com/) integra
 ### Quick Start
 Download the appropriate pre-compiled executable from here: https://github.com/chandler767/Go-Chat/releases
 
-### Video
-*Coming soon*
+### Video Tutorial and Demo
+[![Go-Chat Tutorial and Demo](https://img.youtube.com/vi/w5Kl1rlb24E/0.jpg)](https://www.youtube.com/watch?v=w5Kl1rlb24E) 
 
 ### Project Tutorial
 Build your own chat app with PubNub and Golang.
