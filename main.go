@@ -39,6 +39,42 @@ func drawchat(channel string, username string) {
 		return nil
 	})
 
+	successChannel := make(chan []byte)
+
+	go pubnub.Subscribe(channel, "", successChannel, false, make(chan []byte))
+
+	go func() {
+		for {
+			select {
+			case response := <-successChannel:
+				var msg []interface{}
+				err := json.Unmarshal(response, &msg)
+				if err != nil {
+					log.Println(err)
+					return
+				}
+				ov, err := g.View("output")
+				if err != nil {
+					log.Println("Cannot get output view:", err)
+					return
+				}
+				switch m := msg[0].(type) {
+				case []interface{}:
+					//fmt.Printf("Received message '%s' on channel '%s'\n", m[0], msg[2])
+					// Get output view and print.
+					_, err = fmt.Fprintf(ov, "%s", m[0])
+					if err != nil {
+						log.Println("Cannot print to output view:", err)
+					}
+
+				}
+				g.Update(func(g *gocui.Gui) error {
+					return nil
+				})
+			}
+		}
+	}()
+
 	// Terminal width and height.
 	termwidth, termheight := g.Size()
 
