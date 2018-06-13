@@ -18,7 +18,7 @@ Download the appropriate pre-compiled executable from here: https://github.com/c
 Build your own chat app with PubNub and Golang.
 
 1. Install the latest version of [Go](https://golang.org/) and setup your $GOPATH.
-2. Use `go get` in your terminal to download GoCUI and PubNub messaging packages:
+2. Use `go get` in your terminal to download the GoCUI package and the PubNub messaging package:
 	```bash
 	go get github.com/jroimartin/gocui
 	go get github.com/pubnub/go/messaging
