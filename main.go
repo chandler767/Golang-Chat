@@ -14,7 +14,7 @@ import (
 
 func drawchat(channel string, username string) {
 	// Initialize PubNub
-	pubnub := messaging.NewPubnub("YOUR_PUBLISH_API_KEY", "YOUR_SUBSCRIBE_API_KEY", "", "", false, "", nil)
+	pubnub := messaging.NewPubnub("pub-c-73b26911-73e7-4dbe-baae-9faa04cc669e", "sub-c-1c26bb82-6e95-11e8-967c-82814fd59ac3", "", "", false, "", nil)
 
 	// Create a new GUI.
 	g, err := gocui.NewGui(gocui.OutputNormal)
