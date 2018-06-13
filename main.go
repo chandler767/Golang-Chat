@@ -39,10 +39,9 @@ func drawchat(channel string, username string) {
 		return nil
 	})
 
+	// Subscribe (listen on) a channel.
 	successChannel := make(chan []byte)
-
 	go pubnub.Subscribe(channel, "", successChannel, false, make(chan []byte))
-
 	go func() {
 		for {
 			select {
@@ -60,7 +59,6 @@ func drawchat(channel string, username string) {
 				}
 				switch m := msg[0].(type) {
 				case []interface{}:
-					//fmt.Printf("Received message '%s' on channel '%s'\n", m[0], msg[2])
 					// Get output view and print.
 					_, err = fmt.Fprintf(ov, "%s", m[0])
 					if err != nil {
@@ -68,6 +66,7 @@ func drawchat(channel string, username string) {
 					}
 
 				}
+				// Refresh view
 				g.Update(func(g *gocui.Gui) error {
 					return nil
 				})
@@ -165,7 +164,9 @@ func drawchat(channel string, username string) {
 }
 
 func main() {
+	// Print version info.
 	fmt.Println("PubNub SDK for go;", messaging.VersionInfo())
+	// Get channel and username.
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Enter Channel Name: ")
 	channel, err := reader.ReadString('\n')
@@ -177,5 +178,6 @@ func main() {
 	if err != nil {
 		log.Println("Could not set username:", err)
 	}
+	// Create the GUI.
 	drawchat(strings.TrimSuffix(channel, "\n"), strings.TrimSuffix(username, "\n"))
 }
