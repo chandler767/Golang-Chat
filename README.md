@@ -1,6 +1,8 @@
 # Go-Chat
 Console chat utility that demonstrates [PubNub](https://www.pubnub.com/) integration with Golang.
 
+![Image of Go-Chat](https://raw.githubusercontent.com/chandler767/Go-Chat/master/images/chat.png)
+
 ## Features 
 - Leverages the PubNub Network for chat with [Publish and Subscribe](https://www.pubnub.com/docs/go/data-streams-publish-and-subscribe).
 - Uses [GoCUI](https://github.com/jroimartin/gocui) for a simple console user interface.
@@ -76,11 +78,11 @@ func drawchat(channel string, username string) {
 	ov.Wrap = true
 
 	// Send a welcome message.
-	_, err = fmt.Fprintln(ov, "<App>: Welcome to Go-Chat powered by PubNub!")
+	_, err = fmt.Fprintln(ov, "<Go-Chat>: Welcome to Go-Chat powered by PubNub!")
 	if err != nil {
 		log.Println("Failed to print into output view:", err)
 	}
-	_, err = fmt.Fprintln(ov, "<App>: Press Ctrl-C to quit.")
+	_, err = fmt.Fprintln(ov, "<Go-Chat>: Press Ctrl-C to quit.")
 	if err != nil {
 		log.Println("Failed to print into output view:", err)
 	}
@@ -151,6 +153,7 @@ func drawchat(channel string, username string) {
 }
 
 func main() {
+	// Get channel and username.
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Enter Channel Name: ")
 	channel, err := reader.ReadString('\n')
@@ -162,15 +165,17 @@ func main() {
 	if err != nil {
 		log.Println("Could not set username:", err)
 	}
+	// Create the GUI.
 	drawchat(strings.TrimSuffix(channel, "\n"), strings.TrimSuffix(username, "\n"))
 }
 
 ```
 5. Run the application: `go run main.go`. You should be able to enter a channel name, username, and send messages to yourself. 
+
 ![Image of application GUI](https://raw.githubusercontent.com/chandler767/Go-Chat/master/images/UI.png)
 
 6. Now we need to integrate PubNub to send messages to other users and receive messages.
-7. You need PubNub API Keys. This allows the chat communication over a data stream network. You can fill in the YOUR_PUBLISH_API_KEY and YOUR_SUBSCRIBE_API_KEY placeholder strings with your API keys that you get on the (PubNub website)[http://pubnub.com/].
+7. You need PubNub API Keys. This allows the chat communication over a data stream network. You can fill in the YOUR_PUBLISH_API_KEY and YOUR_SUBSCRIBE_API_KEY placeholder strings with your API keys that you get on the [PubNub website](http://pubnub.com/).
 8. Import the PubNub messaging package and the encoding/json package.
 ```
 "github.com/pubnub/go/messaging"
@@ -218,6 +223,44 @@ go func() {
 	}
 }()
 ```
+11. Change your enter key binding function to send messages to PubNub instead of displaying them in the output. The messages will display in the output if they are succesfully sent to PubNub and received by pubnub.Subscribe() function.
+```go
+// Bind enter key to input to send new messages.
+err = g.SetKeybinding("input", gocui.KeyEnter, gocui.ModNone, func(g *gocui.Gui, iv *gocui.View) error {
+	// Read buffer from the beginning.
+	iv.Rewind()
 
- 
+	// Send message if text was entered.
+	if len(iv.Buffer()) >= 2 {
+		go pubnub.Publish(
+			channel,
+			"<"+username+">: "+iv.Buffer(),
+			make(chan []byte),
+			make(chan []byte),
+		)
 
+		// Reset input.
+		iv.Clear()
+
+		// Reset cursor.
+		err = iv.SetCursor(0, 0)
+		if err != nil {
+			log.Println("Failed to set cursor:", err)
+		}
+		return err
+	}
+	return nil
+})
+if err != nil {
+	log.Println("Cannot bind the enter key:", err)
+}
+```
+12. For reference you can print the PubNub version info at the start of our main() function.
+```go
+// Print version info.
+fmt.Println("PubNub SDK for go;", messaging.VersionInfo())
+```
+13. Try it out `go run main.go`.
+
+
+![Image of Go-Chat](https://raw.githubusercontent.com/chandler767/Go-Chat/master/images/chat.png)
