@@ -1,4 +1,4 @@
-# Go-Chat
+# Golang-Chat
 Console chat utility that demonstrates [PubNub](https://www.pubnub.com/) integration with Golang.
 
 ![Image of Go-Chat](https://raw.githubusercontent.com/chandler767/Go-Chat/master/images/chat.png)
