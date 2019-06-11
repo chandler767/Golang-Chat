@@ -175,6 +175,9 @@ func main() {
 
 6. Now we need to integrate PubNub to send messages to other users and receive messages.
 7. You need PubNub API Keys. This allows the chat communication over a data stream network. You can fill in the YOUR_PUBLISH_API_KEY and YOUR_SUBSCRIBE_API_KEY placeholder strings with your API keys that you get on the [PubNub website](http://pubnub.com/).
+
+<a href="https://dashboard.pubnub.com/signup?devrel_gh=golang-chat" target="_blank" rel="nofollow noopener noreferrer"><img src="https://camo.githubusercontent.com/5bc964692f93436566239a5dd506bb55c0ee4171/68747470733a2f2f692e696d6775722e636f6d2f6f673544446a662e706e67" alt="PubNub Signup" width="260"/></a>
+
 8. Import the PubNub messaging package and the encoding/json package.
 ```
 "github.com/pubnub/go/messaging"
